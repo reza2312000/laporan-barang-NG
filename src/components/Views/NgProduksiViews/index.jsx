@@ -126,7 +126,7 @@ const NgProduksiViews = () => {
                   </span>
                 </button>
                 <button
-                  onClick={()=> setIsModalNewReportOpen(true)}
+                  onClick={() => setIsModalNewReportOpen(true)}
                   className="btn btn-sm btn-neutral shadow-md shadow-gray-300 border-2"
                 >
                   Laporan Baru
@@ -135,73 +135,75 @@ const NgProduksiViews = () => {
                   </span>
                 </button>
               </div>
-              <table className="table border my-2">
-                <thead>
-                  <tr>
-                    <th className="text-center">No</th>
-                    <th className="text-center">Nama Part</th>
-                    <th className="text-center">Jenis NG</th>
-                    <th className="text-center">Jumlah</th>
-                    <th className="text-center">Total Berat (Estimasi)</th>
-                    <th className="text-center">Total Berat (Aktual)</th>
-                    <th className="text-center">Status</th>
-                    <th className="text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allDataByNik.map((item, index) => {
-                    const tolerance = weightToleranceFilter(item.data_NG.part);
-                    const isOverTolerance =
-                      item.data_NG.aktual_berat >=
-                      item.data_NG.estimasi_berat + tolerance;
-                    return (
-                      <tr
-                        key={item.id}
-                        className={isOverTolerance ? "bg-red-600/30" : ""}
-                      >
-                        <td className="text-center">{index + 1}</td>
-                        <td className="text-center">{item.data_NG.part}</td>
-                        <td className="text-center">{item.data_NG.jenis_NG}</td>
-                        <td className="text-center text-error font-semibold">
-                          {item.data_NG.jumlah_NG} pcs
-                        </td>
-                        <td className="text-center text-primary font-semibold">
-                          {item.data_NG.estimasi_berat} gr
-                        </td>
-                        <td className="text-center text-green-600 font-semibold">
-                          {item.data_NG.aktual_berat
-                            ? `${item.data_NG.aktual_berat} gr`
-                            : "-"}
-                        </td>
-                        <td className="text-center">
-                          <span
-                            className={
+              <div className="flex items-center justify-center">
+                <table className="table w-full my-2">
+                  <thead className="bg-blue-500 text-white font-medium">
+                    <tr>
+                      <th className="text-center">No</th>
+                      <th className="text-center">Nama Part</th>
+                      <th className="text-center">Jenis NG</th>
+                      <th className="text-center">Jumlah</th>
+                      <th className="text-center">Total Berat (Estimasi)</th>
+                      <th className="text-center">Total Berat (Aktual)</th>
+                      <th className="text-center">Status</th>
+                      <th className="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allDataByNik.map((item, index) => {
+                      const tolerance = weightToleranceFilter(item.data_NG.part);
+                      const isOverTolerance =
+                        item.data_NG.aktual_berat >=
+                        item.data_NG.estimasi_berat + tolerance;
+                      return (
+                        <tr
+                          key={item.id}
+                          className={isOverTolerance ? "bg-red-600/30" : ""}
+                        >
+                          <td className="text-center">{index + 1}</td>
+                          <td className="text-center">{item.data_NG.part}</td>
+                          <td className="text-center">{item.data_NG.jenis_NG}</td>
+                          <td className="text-center text-error font-semibold">
+                            {item.data_NG.jumlah_NG} pcs
+                          </td>
+                          <td className="text-center text-primary font-semibold">
+                            {item.data_NG.estimasi_berat} gr
+                          </td>
+                          <td className="text-center text-green-600 font-semibold">
+                            {item.data_NG.aktual_berat
+                              ? `${item.data_NG.aktual_berat} gr`
+                              : "-"}
+                          </td>
+                          <td className="text-center">
+                            <span
+                              className={`
                               item.status === "ACC"
                                 ? "badge badge-accent"
                                 : item.status === "Disapprove"
                                 ? "badge badge-error text-white"
-                                : "badge badge-warning"
-                            }
-                          >
-                            {item.status ? item.status : "Waiting"}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <button
-                            onClick={() => {
-                              getDataById(item.id);
-                              setIsModalUpdateDataOpen(true);
-                            }}
-                            className="btn btn-sm btn-neutral"
-                          >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                                : "badge badge-warning" p-2 text-white rounded-md font-medium`
+                              }
+                            >
+                              {item.status ? item.status : "Waiting"}
+                            </span>
+                          </td>
+                          <td className="text-center">
+                            <button
+                              onClick={() => {
+                                getDataById(item.id);
+                                setIsModalUpdateDataOpen(true);
+                              }}
+                              className="btn btn-sm btn-neutral"
+                            >
+                              <FontAwesomeIcon icon={faPenToSquare} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -210,7 +212,7 @@ const NgProduksiViews = () => {
       {isModalNewReportOpen && <ModalNewReport />}
       {isModalAddDataOpen && <ModalAddData />}
       {isModalUpdateDataOpen && <ModalUpdateData />}
-      {isModalDeleteDataOpen && <ModalDeleteData  clickFunction={deleteData}/>}
+      {isModalDeleteDataOpen && <ModalDeleteData clickFunction={deleteData} />}
     </div>
   );
 };

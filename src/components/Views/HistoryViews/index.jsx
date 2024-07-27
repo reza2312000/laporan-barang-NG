@@ -49,12 +49,12 @@ const HistoryViews = () => {
             >
               <FontAwesomeIcon icon={faTrashCan} />
             </button>}
-            
+
           </div>
           <hr className="mt-2" />
           <table className="table border mt-3">
-            <thead>
-              <tr>
+            <thead className='bg-blue-500 text-white font-meidum'>
+              <tr >
                 <th className="text-center">No</th>
                 <th className="text-center">Nama Karyawan</th>
                 <th className="text-center">Mesin</th>
@@ -64,7 +64,7 @@ const HistoryViews = () => {
                 <th className="text-center">Total Berat (Estimasi)</th>
                 <th className="text-center">Total Berat (Aktual)</th>
                 <th className="text-center">Tanggal</th>
-                <th className="text-center">Status</th>
+                <th className="text-center p-2">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -99,12 +99,12 @@ const HistoryViews = () => {
                     </td>
                     <td className="text-center">
                       <span
-                        className={
-                          item.status === "ACC"
+                        className={`
+                          {item.status === "ACC"
                             ? "badge badge-accent"
                             : item.status === "Disapprove"
                             ? "badge badge-error text-white"
-                            : "badge badge-warning"
+                            : "badge badge-warning"} p-2 rounded-md text-white  font-medium hover:cursor-pointer `
                         }
                       >
                         {item.status ? item.status : "Waiting"}

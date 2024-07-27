@@ -50,7 +50,7 @@ const NgKeluarViews = () => {
           </div>
           <hr className="mt-2" />
           <table className="table border mt-3">
-            <thead>
+            <thead className="bg-blue-500 text-white font-medium">
               <tr>
                 <th className="text-center">No</th>
                 <th className="text-center">Nama Karyawan</th>
@@ -97,12 +97,12 @@ const NgKeluarViews = () => {
                     </td>
                     <td className="text-center">
                       <span
-                        className={
+                        className={`
                           item.status === "ACC"
                             ? "badge badge-accent"
                             : item.status === "Disapprove"
                             ? "badge badge-error text-white"
-                            : "badge badge-warning"
+                            : "badge badge-warning" p-2 rounded-md font-medium text-white`
                         }
                       >
                         {item.status ? item.status : "Waiting"}

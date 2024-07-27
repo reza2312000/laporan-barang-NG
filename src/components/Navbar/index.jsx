@@ -23,12 +23,12 @@ const Navbar = () => {
     <div className="navbar bg-base-100 shadow-md">
       <div className="navbar-start">
         <Link href={"/"} className="link ms-2">
-          <Image
+          {/* <Image
             src="/static/assets/kiyokuni.jpg"
             alt="logo"
             width={150}
             height={150}
-          />
+          /> */}
         </Link>
       </div>
       <div className="navbar-end">

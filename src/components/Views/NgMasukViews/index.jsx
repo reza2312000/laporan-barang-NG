@@ -46,11 +46,11 @@ const NgMasukViews = () => {
         <div className="border-2 bg-white p-2">
           <div className="flex justify-between">
             <h1 className="font-bold">NG Masuk</h1>
-            <h1 className="font-bold text-blue-600 me-2">Admin Gudang</h1>
+            {/* <h1 className="font-bold text-blue-600 me-2">Admin Gudang</h1> */}
           </div>
           <hr className="mt-2" />
-          <table className="table border mt-3">
-            <thead>
+          <table className="table border  mt-3">
+            <thead className="bg-blue-500 text-white font-medium">
               <tr>
                 <th className="text-center">No</th>
                 <th className="text-center font-semibold">Nama Karyawan</th>
@@ -98,12 +98,12 @@ const NgMasukViews = () => {
                     </td>
                     <td className="text-center">
                       <span
-                        className={
+                        className={`
                           item.status === "ACC"
                             ? "badge badge-accent"
                             : item.status === "Disapprove"
                             ? "badge badge-error text-white"
-                            : "badge badge-warning"
+                            : "badge badge-warning" p-2 text-white rounded-md font-medium`
                         }
                       >
                         {item.status ? item.status : "Waiting"}
