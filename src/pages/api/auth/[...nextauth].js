@@ -37,6 +37,7 @@ const authOption = {
         (token.id = user.id),
           (token.nik = user.nik),
           (token.nama = user.nama);
+          (token.role = user.role);
       }
       return token;
     },
@@ -49,6 +50,9 @@ const authOption = {
       }
       if ("nama" in token) {
         session.user.nama = token.nama;
+      }
+      if ("role" in token) {
+        session.user.role = token.role;
       }
       return session;
     },

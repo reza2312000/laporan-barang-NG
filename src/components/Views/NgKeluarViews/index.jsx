@@ -6,21 +6,26 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import ModalAddActualWeight from "../ModalViews/ModalAddActualWeight";
 import { formatDate } from "date-fns";
-import ModalChangeStatus from "../ModalViews/ModalChangeStatus";
 
-const NgMasukViews = () => {
+const NgKeluarViews = () => {
   const { data: session } = useSession();
   const { getAllData, getDataById } = useDataControllerContext();
   const {
     allDataReport,
-    isModalChangeStatusOpen,
-    setIsModalChangeStatusOpen,
+    isModalAddActualWeightOpen,
+    setIsModalAddActualWeightOpen,
   } = useStateBasketContext();
 
+  useEffect(() => {
+    getAllData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
   const weightToleranceFilter = (part) => {
+    console.log(part)
     let tolerance;
     switch (part) {
-      case "lowertow":
+      case "Lowertow":
         tolerance = 5;
         break;
       case "Part 2":
@@ -35,25 +40,20 @@ const NgMasukViews = () => {
     return tolerance;
   };
 
-  useEffect(() => {
-    getAllData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
-
   return (
     <div className="bg-gray-100 w-4/5">
       <div className="p-2 mx-auto">
         <div className="border-2 bg-white p-2">
           <div className="flex justify-between">
-            <h1 className="font-bold">NG Masuk</h1>
-            <h1 className="font-bold text-blue-600 me-2">Admin Gudang</h1>
+            <h1 className="font-bold">NG Keluar</h1>
+            <h1 className="font-bold text-blue-600 me-2">Operator Gudang</h1>
           </div>
           <hr className="mt-2" />
           <table className="table border mt-3">
             <thead>
               <tr>
                 <th className="text-center">No</th>
-                <th className="text-center font-semibold">Nama Karyawan</th>
+                <th className="text-center">Nama Karyawan</th>
                 <th className="text-center">Mesin</th>
                 <th className="text-center">Nama Part</th>
                 <th className="text-center">Jenis NG</th>
@@ -71,14 +71,13 @@ const NgMasukViews = () => {
                 const isOverTolerance =
                   item.data_NG.aktual_berat >=
                   item.data_NG.estimasi_berat + tolerance;
-
                 return (
                   <tr
                     key={item.id}
                     className={isOverTolerance ? "bg-red-600/30" : ""}
                   >
                     <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{item.nama}</td>
+                    <td className="text-center font-semibold">{item.nama}</td>
                     <td className="text-center">{item.mesin}</td>
                     <td className="text-center">{item.data_NG.part}</td>
                     <td className="text-center">{item.data_NG.jenis_NG}</td>
@@ -113,7 +112,7 @@ const NgMasukViews = () => {
                       <button
                         onClick={() => {
                           getDataById(item.id);
-                          setIsModalChangeStatusOpen(true);
+                          setIsModalAddActualWeightOpen(true);
                         }}
                         className="btn btn-sm btn-neutral"
                       >
@@ -127,8 +126,8 @@ const NgMasukViews = () => {
           </table>
         </div>
       </div>
-      {isModalChangeStatusOpen && <ModalChangeStatus />}
+      {isModalAddActualWeightOpen && <ModalAddActualWeight />}
     </div>
   );
 };
-export default NgMasukViews;
+export default NgKeluarViews;

@@ -4,28 +4,52 @@ import { useStateBasketContext } from "./StateBasketContext";
 const ToggleFunctionContext = createContext();
 
 export const ToggleFunctionContextProvider = ({ children }) => {
-    const {isBarangMasukBtnClicked,
-        isNgProduksiBtnClicked, 
-        setIsNgProduksiBtnClicked,
-        setIsNgMasukBtnClicked} = useStateBasketContext()
+  const {
+    setIsNgProduksiBtnClicked,
+    setIsNgMasukBtnClicked,
+    setIsNgKeluarBtnClicked,
+    setIsHistoryBtnClicked,
+  } = useStateBasketContext();
 
-    const toggleNgProduksi = () => {
-        setIsNgProduksiBtnClicked(true)
-        setIsNgMasukBtnClicked(false)
-    }
+  const toggleNgProduksi = () => {
+    setIsNgProduksiBtnClicked(true);
+    setIsNgMasukBtnClicked(false);
+    setIsNgKeluarBtnClicked(false);
+    setIsHistoryBtnClicked(false);
+  };
 
-    const toggleNgMasuk = () => {
-        setIsNgMasukBtnClicked(true)
-        setIsNgProduksiBtnClicked(false)
-    }
+  const toggleNgMasuk = () => {
+    setIsNgMasukBtnClicked(true);
+    setIsNgProduksiBtnClicked(false);
+    setIsNgKeluarBtnClicked(false);
+    setIsHistoryBtnClicked(false);
+  };
+
+  const toggleNgKeluar = () => {
+    setIsNgKeluarBtnClicked(true);
+    setIsNgMasukBtnClicked(false);
+    setIsNgProduksiBtnClicked(false);
+    setIsHistoryBtnClicked(false);
+  };
+
+  const toggleHistory = () => {
+    setIsHistoryBtnClicked(true);
+    setIsNgKeluarBtnClicked(false);
+    setIsNgMasukBtnClicked(false);
+    setIsNgProduksiBtnClicked(false);
+  };
 
   const contextValue = {
     toggleNgProduksi,
-    toggleNgMasuk
+    toggleNgMasuk,
+    toggleNgKeluar,
+    toggleHistory,
   };
 
   return (
-    <ToggleFunctionContext.Provider value={contextValue}>{children}</ToggleFunctionContext.Provider>
+    <ToggleFunctionContext.Provider value={contextValue}>
+      {children}
+    </ToggleFunctionContext.Provider>
   );
 };
 

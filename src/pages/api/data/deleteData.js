@@ -3,7 +3,7 @@ import { deleteData } from "@/lib/firestore/dataController/dataController";
 export default async function handlerDeleteData(req, res) {
   if (req.method === "DELETE") {
     try {
-      const { docId } = req.query;
+      const { docId} = req.query;
 
       const data = await deleteData(docId);
       res.status(200).json(data);

@@ -1,17 +1,16 @@
 import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useAllStateContext } from "@/context/AllStateContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useStateBasketContext } from "@/context/reza/StateBasketContext";
 
 const LoginPage = () => {
   const { push } = useRouter();
   const { data: session } = useSession();
-  const { isValueError, setIsValueError, isBtnLoading, setIsBtnLoading } =
-    useAllStateContext();
+  const {isWrongPasswrod, setIsWrongPassword, isBtnLoading, setIsBtnLoading} = useStateBasketContext()
 
-  const handleSubmit = async (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     const form = event.target;
     try {
@@ -22,13 +21,12 @@ const LoginPage = () => {
         password: form.password.value,
       });
       if (!response?.error) {
+        push("/dashboard");
         form.reset();
-        push("/qcsys");
-        setIsBtnLoading(false);
-        setIsValueError(false);
-      } else {
-        setIsBtnLoading(false);
-        setIsValueError(true);
+        setIsBtnLoading(false)
+        } else {
+          setIsWrongPassword(true)
+          setIsBtnLoading(false)
       }
     } catch (error) {
       console.log(error);
@@ -40,14 +38,14 @@ const LoginPage = () => {
       <div className="container flex flex-col w-1/3 mt-16">
         <h1 className="text-2xl font-bold text-center">LOGIN</h1>
         <div className="divider"></div>
-        {isValueError ? (
+        {isWrongPasswrod ? (
           <p className="text-center text-error mb-3">
             NIK atau Password salah!
           </p>
         ) : (
           ""
         )}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleLogin}>
           <div className="form-control">
             <label className="label">
               <span className="label-text font-semibold text-lg">NIK</span>
@@ -85,11 +83,11 @@ const LoginPage = () => {
               </button>
             ) : (
               <Link
-                href={"/qcsys"}
+                href={"/dashboard"}
                 className="btn
                 bg-gray-300
                 w-full">
-                Dashboard
+                Login
                 <FontAwesomeIcon
                   icon={faArrowRight}
                   size="lg"
@@ -100,8 +98,8 @@ const LoginPage = () => {
           </div>
         </form>
         <p className="mt-3">
-          <Link href={"/auth/register"} className="link text-primary">
-            Buat Akun!
+        Don{"'"}t have an account? <Link href={"/auth/register"} className="link text-primary">
+            Sign Up Now
           </Link>
         </p>
       </div>

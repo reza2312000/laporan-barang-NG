@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="w-full h-screen relative overflow-hidden">
       <Image
-        src="/static/assets/bg.jpg"
+        src="/static/assets/bg2.jpg"
         layout="responsive"
         width={1920}
         height={1080}
@@ -18,12 +18,11 @@ export default function Home() {
       />
       <div className="absolute w-full top-1/2 left-16">
         <Link
-          href={session ? "/qcsys" : "/auth/login"}
+          href={session ? "/dashboard" : "/auth/login"}
           className="btn btn-lg glass btn-wide text-white font-bold px-4 py-2 rounded">
-          QC Input
+          Dashboard
         </Link>
       </div>
-      <Footer />
     </div>
   );
 }

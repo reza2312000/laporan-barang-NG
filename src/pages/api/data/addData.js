@@ -1,21 +1,23 @@
-import { addData } from "@/lib/firestore/dataController/dataController";
+import { addDataBatch } from "@/lib/firestore/dataController/dataController";
 
 export default async function handlerAddData(req, res) {
   if (req.method === "POST") {
     try {
-      const { name, nik, part, shift, date, jenisNg, jumlahNg } = req.body;
+      const { name, nik, part, machine, shift, date, jenisNg, jumlahNg, estimasiBerat, status } = req.body;
 
-      const docRef = await addData(
+      const docRefs = await addDataBatch(
         name,
         nik,
         part,
+        machine,
         shift,
         date,
         jenisNg,
-        jumlahNg
+        jumlahNg,
+        estimasiBerat, 
+        status
       );
-      const docId = docRef.id;
-      res.status(200).json({ docId });
+      res.status(200).json({ message: "Data successfully added to Firestore", docRefs });
     } catch (error) {
       console.error("Error adding data to Firestore:", error);
       res.status(500).json({ message: "Failed to add data to Firestore" });

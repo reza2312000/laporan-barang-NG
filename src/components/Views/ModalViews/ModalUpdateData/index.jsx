@@ -11,17 +11,32 @@ const ModalUpdateData = () => {
     selectedPart,
     selectedShift,
     selectedDate,
+    selectedMachine,
     selectedJenisNg,
     selectedJumlahNg,
     setSelectedPart,
-    setSelectedShift,
-    setSelectedDate,
     setSelectedJenisNg,
     setSelectedJumlahNg,
     setIsModalUpdateDataOpen,
-    setIsModalDeleteDataOpen
+    setIsModalDeleteDataOpen,
+    estimasiTotalBerat,
+    setEstimasiTotalBerat,
   } = useStateBasketContext();
-  const { updateData, deleteData } = useDataControllerContext();
+  const { updateData} = useDataControllerContext();
+
+  if (selectedPart === "Lowertow") {
+    let Lowertow = 0
+    Lowertow = selectedJumlahNg * 5
+    setEstimasiTotalBerat(Lowertow)
+  } else if (selectedPart === "Part 2") {
+    let part2 = 0
+    part2 = selectedJumlahNg * 10
+    setEstimasiTotalBerat(part2)
+  } else if (selectedPart === "Part 3") {
+    let part3 = 0
+    part3 = selectedJumlahNg * 1000
+    setEstimasiTotalBerat(part3)
+  }
 
   return (
     <Modal
@@ -39,15 +54,20 @@ const ModalUpdateData = () => {
           <hr />
           <div className="mt-2">
             <div className="flex justify-between px-1">
-              <span className="text-sm font-semibold">
-                Shift : <span className="text-primary">{selectedShift}</span>
+            <span className="text-sm font-semibold">
+                Mesin : <span className="text-primary">{selectedMachine}</span>
               </span>
-              <span className="text-sm font-semibold">
-                Date :
-                <span className="text-primary">
-                  {formatDate(Date(selectedDate), "dd/MM/yyyy")}
+              <div>
+                <span className="text-sm font-semibold">
+                  Shift : <span className="text-primary ms-1">{selectedShift}</span>
                 </span>
-              </span>
+                <span className="text-sm font-semibold ms-3">
+                  Date :
+                  <span className="text-primary ms-1">
+                    {formatDate(Date(selectedDate), "dd/MM/yyyy")}
+                  </span>
+                </span>
+              </div>
             </div>
             <div className="mt-4">
               <label>
@@ -88,6 +108,12 @@ const ModalUpdateData = () => {
                   />
                 </span>
               </label>
+              <label className="flex flex-col mt-3">
+              <p className="font-semibold text-sm ms-1">Estimasi Total Berat :</p>
+              <span>
+                <input value={estimasiTotalBerat ? `${estimasiTotalBerat} gr` : 0} onChange={(e)=> setEstimasiTotalBerat(e.target.value)} type="text" className="input input-sm input-bordered mt-1 w-full" disabled/>
+              </span>
+            </label>
             </div>
             <hr className="mt-3" />
             <div className="flex justify-end">

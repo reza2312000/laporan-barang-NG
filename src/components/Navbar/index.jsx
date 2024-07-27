@@ -16,7 +16,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/qcsys/qcdataview");
+    router.push("/auth/login");
   };
 
   return (

@@ -1,7 +1,6 @@
 import { useDataControllerContext } from "@/context/reza/DataControllerContext";
 import { useStateBasketContext } from "@/context/reza/StateBasketContext";
 import {
-  faCheck,
   faPenToSquare,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
@@ -12,26 +11,48 @@ import ModalAddData from "../ModalViews/ModalAddData";
 import Footer from "@/components/Footer";
 import ModalUpdateData from "../ModalViews/ModalUpdateData";
 import ModalDeleteData from "../ModalViews/ModalDeleteData";
+import ModalNewReport from "../ModalViews/ModalNewReportViews";
 
 const NgProduksiViews = () => {
   const { data: session } = useSession();
   const {
-    allDataReport,
+    allDataByNik,
     shift,
     date,
+    machine,
+    setMachine,
     setShift,
     setDate,
-    isUiHeaderDisabled,
+    isModalNewReportOpen,
     isModalAddDataOpen,
-    setIsModalAddDataOpen,
     isModalUpdateDataOpen,
+    isModalDeleteDataOpen,
+    setIsModalAddDataOpen,
+    setIsModalNewReportOpen,
     setIsModalUpdateDataOpen,
-    isModalDeleteDataOpen
   } = useStateBasketContext();
-  const { getAllData, getDataById } = useDataControllerContext();
+  const { getDataByNik, getDataById, deleteData } = useDataControllerContext();
+
+  const weightToleranceFilter = (part) => {
+    let tolerance;
+    switch (part) {
+      case "Lowertow":
+        tolerance = 5;
+        break;
+      case "Part 2":
+        tolerance = 10;
+        break;
+      case "Part 3":
+        tolerance = 1000;
+        break;
+      default:
+        tolerance = 20;
+    }
+    return tolerance;
+  };
 
   useEffect(() => {
-    getAllData();
+    getDataByNik();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
@@ -39,11 +60,29 @@ const NgProduksiViews = () => {
     <div className="bg-gray-100 w-4/5">
       <div className="p-2 mx-auto">
         <div className="container bg-white min-h-screen shadow-xl border-2 p-2">
-          <h1 className="font-bold">Input NG</h1>
+          <div className="flex justify-between">
+            <h1 className="font-bold">Input NG </h1>
+            <h1 className="font-bold text-blue-600 me-2">Operator Produksi</h1>
+          </div>
           <hr className="mt-2" />
           <div className="container">
             <div className="py-3">
               <div className="flex items-center justify-between border-2 rounded-lg p-2">
+                <p className="font-semibold">
+                  Mesin :
+                  <span className="me-4">
+                    <select
+                      value={machine}
+                      onChange={(e) => setMachine(e.target.value)}
+                      className="select select-sm select-bordered mt-1 ms-2"
+                      required
+                    >
+                      <option value="Mesin 1">Mesin 1</option>
+                      <option value="Mesin 2">Mesin 2</option>
+                      <option value="Mesin 3">Mesin 3</option>
+                    </select>
+                  </span>
+                </p>
                 <div className="flex">
                   <p className="font-semibold">
                     Shift :
@@ -52,7 +91,7 @@ const NgProduksiViews = () => {
                         value={shift}
                         onChange={(e) => setShift(e.target.value)}
                         className="select select-sm select-bordered mt-1 ms-2"
-                        disabled={isUiHeaderDisabled}
+                        required
                       >
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -68,7 +107,7 @@ const NgProduksiViews = () => {
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         className="input input-sm input-bordered mt-1 ms-2"
-                        disabled={isUiHeaderDisabled}
+                        required
                       />
                     </span>
                   </p>
@@ -76,12 +115,21 @@ const NgProduksiViews = () => {
               </div>
             </div>
             <div className="border-2 rounded px-3">
-              <div className="my-3">
+              <div className="flex justify-between my-3">
                 <button
                   onClick={() => setIsModalAddDataOpen(true)}
                   className="btn btn-sm btn-primary shadow-md shadow-gray-300 border-2"
                 >
                   Tambah
+                  <span className="ms-1">
+                    <FontAwesomeIcon icon={faPlus} size="lg" />
+                  </span>
+                </button>
+                <button
+                  onClick={()=> setIsModalNewReportOpen(true)}
+                  className="btn btn-sm btn-neutral shadow-md shadow-gray-300 border-2"
+                >
+                  Laporan Baru
                   <span className="ms-1">
                     <FontAwesomeIcon icon={faPlus} size="lg" />
                   </span>
@@ -94,33 +142,75 @@ const NgProduksiViews = () => {
                     <th className="text-center">Nama Part</th>
                     <th className="text-center">Jenis NG</th>
                     <th className="text-center">Jumlah</th>
+                    <th className="text-center">Total Berat (Estimasi)</th>
+                    <th className="text-center">Total Berat (Aktual)</th>
+                    <th className="text-center">Status</th>
                     <th className="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {allDataReport.map((item, index) => (
-                     <tr key={item.id}>
-                     <td className="text-center">{index + 1}</td>
-                     <td className="text-center">{item.data_NG.part}</td>
-                     <td className="text-center">{item.data_NG.jenis_NG}</td>
-                     <td className="text-center">{item.data_NG.jumlah_NG}</td>
-                     <td className="text-center">
-                       <button onClick={()=> {getDataById(item.id); setIsModalUpdateDataOpen(true)}} className="btn btn-sm btn-neutral">
-                         <FontAwesomeIcon icon={faPenToSquare} />
-                       </button>
-                     </td>
-                   </tr>
-                  ))}
+                  {allDataByNik.map((item, index) => {
+                    const tolerance = weightToleranceFilter(item.data_NG.part);
+                    const isOverTolerance =
+                      item.data_NG.aktual_berat >=
+                      item.data_NG.estimasi_berat + tolerance;
+                    return (
+                      <tr
+                        key={item.id}
+                        className={isOverTolerance ? "bg-red-600/30" : ""}
+                      >
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{item.data_NG.part}</td>
+                        <td className="text-center">{item.data_NG.jenis_NG}</td>
+                        <td className="text-center text-error font-semibold">
+                          {item.data_NG.jumlah_NG} pcs
+                        </td>
+                        <td className="text-center text-primary font-semibold">
+                          {item.data_NG.estimasi_berat} gr
+                        </td>
+                        <td className="text-center text-green-600 font-semibold">
+                          {item.data_NG.aktual_berat
+                            ? `${item.data_NG.aktual_berat} gr`
+                            : "-"}
+                        </td>
+                        <td className="text-center">
+                          <span
+                            className={
+                              item.status === "ACC"
+                                ? "badge badge-accent"
+                                : item.status === "Disapprove"
+                                ? "badge badge-error text-white"
+                                : "badge badge-warning"
+                            }
+                          >
+                            {item.status ? item.status : "Waiting"}
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            onClick={() => {
+                              getDataById(item.id);
+                              setIsModalUpdateDataOpen(true);
+                            }}
+                            className="btn btn-sm btn-neutral"
+                          >
+                            <FontAwesomeIcon icon={faPenToSquare} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
+      {isModalNewReportOpen && <ModalNewReport />}
       {isModalAddDataOpen && <ModalAddData />}
       {isModalUpdateDataOpen && <ModalUpdateData />}
-      {isModalDeleteDataOpen && <ModalDeleteData />}
+      {isModalDeleteDataOpen && <ModalDeleteData  clickFunction={deleteData}/>}
     </div>
   );
 };
